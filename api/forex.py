@@ -6,8 +6,10 @@ import urllib.parse
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        # Parse the URL path
-        path = self.path
+        # Parse the URL and query parameters
+        parsed_url = urllib.parse.urlparse(self.path)
+        query_params = urllib.parse.parse_qs(parsed_url.query)
+        endpoint = query_params.get('endpoint', [''])[0]
         
         # Add CORS headers
         self.send_response(200)
@@ -17,26 +19,26 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
         
-        # Route handling
-        if '/health' in path:
+        # Route handling based on endpoint parameter
+        if endpoint == 'health':
             response = self.get_health()
-        elif '/dashboard-data' in path:
+        elif endpoint == 'dashboard-data':
             response = self.get_dashboard_data()
-        elif '/current-price' in path:
+        elif endpoint == 'current-price':
             response = self.get_current_price()
-        elif '/technical-analysis' in path:
+        elif endpoint == 'technical-analysis':
             response = self.get_technical_analysis()
-        elif '/price-history' in path:
+        elif endpoint == 'price-history':
             response = self.get_price_history()
-        elif '/prediction-history' in path:
+        elif endpoint == 'prediction-history':
             response = self.get_prediction_history()
-        elif '/technical-signals' in path:
+        elif endpoint == 'technical-signals':
             response = self.get_technical_signals()
-        elif '/fundamental-analysis' in path:
+        elif endpoint == 'fundamental-analysis':
             response = self.get_fundamental_analysis()
-        elif '/ml-prediction' in path:
+        elif endpoint == 'ml-prediction':
             response = self.get_ml_prediction()
-        elif '/performance' in path:
+        elif endpoint == 'performance':
             response = self.get_performance()
         else:
             response = self.get_endpoints_list()
